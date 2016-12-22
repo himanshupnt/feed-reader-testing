@@ -97,11 +97,12 @@ $(function() {
          */
         /*Load feed before running test spec*/
         beforeEach(function(done){
-            loadFeed(0, done);
+            loadFeed(0, function(){
+                done();
+            });
         });
-        it('has atleast one entry', function(done) {
+        it('has atleast one entry', function() {
             expect($('.feed .entry').length).toBeGreaterThan(0);
-            done();
         });
     });
 
@@ -119,15 +120,19 @@ $(function() {
             /*Load feed before running test spec*/
             loadFeed(0, function(){
                 /*Store this feed*/
-                $feed = $('.header-title').html();
+                $feed = $('.feed').html();
+                /*Load feed again*/
+                loadFeed(1, function(){
+                    /*Store latest feed*/
+                    $newFeed = $('.feed').html();
+                    done();
+                });
             });
-            /*Load feed again*/
-            loadFeed(1, done);
+            
+            
         }); 
         /*Spec to check feed change */
         it('Content changes on feed reload', function(){
-            /*Store latest feed*/
-            $newFeed = $('.header-title').html();
             /*Test to check feeds from consecutive loads*/
             expect($feed).not.toEqual($newFeed);
         });
